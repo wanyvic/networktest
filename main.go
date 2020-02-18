@@ -23,7 +23,6 @@ var (
 func main() {
 	var addr string
 	var err error
-	min = time.Duration(int64(^uint64(0) >> 1))
 	timeout = time.Duration(5) * time.Second
 
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
@@ -48,17 +47,31 @@ func main() {
 		}
 		timeout = time.Duration(i) * time.Second
 	}
+	d1 := fmt.Sprintf("\n***************\n[%s] net test started\n", time.Now().Format("2006-01-02 15:04:05"))
+	fmt.Printf("%s", d1)
+	_, err = f.Write([]byte(d1))
+	if err != nil {
+		fmt.Println(err)
+	}
 	for {
-		connect(addr)
 		lost++
+		connect(addr)
 	}
 }
 func connect(addr string) {
+
+	min = time.Duration(int64(^uint64(0) >> 1))
+	max = 0
 	conn, err := net.Dial("tcp", addr)
 	if err != nil {
 		logrus.Error(err)
 	}
-	fmt.Println(conn.RemoteAddr())
+	d1 := fmt.Sprintf("[%s] new connection %s \n", time.Now().Format("2006-01-02 15:04:05"), conn.RemoteAddr().String())
+	fmt.Printf("%s", d1)
+	_, err = f.Write([]byte(d1))
+	if err != nil {
+		fmt.Println(err)
+	}
 	defer conn.Close()
 	t := time.Now()
 
@@ -84,18 +97,30 @@ func connect(addr string) {
 		r := time.Since(t)
 		if r < min {
 			min = r
+			d1 := fmt.Sprintf("[%s] new min ping: %s\n", time.Now().Format("2006-01-02 15:04:05"), min)
+			fmt.Printf("%s", d1)
+			_, err = f.Write([]byte(d1))
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 		if r > max {
 			max = r
+			d1 := fmt.Sprintf("[%s] new max ping: %s\n", time.Now().Format("2006-01-02 15:04:05"), max)
+			fmt.Printf("%s", d1)
+			_, err = f.Write([]byte(d1))
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 
 		// d1 := fmt.Sprintf("[%s] close min %s max %s timeout %s\n", time.Now().Format("2006-01-02 15:04:05"), min, max, timeout)
-		// fmt.Println(d1)
+		// fmt.Printf("%s",d1)
 		// _, err := f.Write([]byte(d1))
 		// if err != nil {
 		// 	fmt.Println(err)
 		// }
-		fmt.Println("ping: ", r)
+		fmt.Printf("[%s] ping: %s\n", time.Now().Format("2006-01-02 15:04:05"), r.String())
 		time.Sleep(time.Second)
 		t = time.Now()
 
@@ -107,22 +132,13 @@ func connect(addr string) {
 		}
 
 	}
-	d1 := fmt.Sprintf("[%s] close index %d min %s max %s timeout %s\n", time.Now().Format("2006-01-02 15:04:05"), lost, min, max, timeout)
+
+	r := time.Since(t)
+	d1 = fmt.Sprintf("[%s] close index %d min %s max %s ReadDeadline set timeout %s time use %s\n", time.Now().Format("2006-01-02 15:04:05"), lost, min, max, timeout, r)
 	fmt.Println("lost connection")
-	fmt.Println(d1)
+	fmt.Printf("%s", d1)
 	_, err = f.Write([]byte(d1))
 	if err != nil {
 		fmt.Println(err)
 	}
 }
-
-// #! /bin/bash
-// yourdomain="xxx.xxx.xxx.xxx"
-// /root/.acme.sh/acme.sh --days 30 --renew --dns -d ${yourdomain}
-// cert_file="/root/.acme.sh/${yourdomain}/${yourdomain}.cer"
-// key_file="/root/.acme.sh/${yourdomain}/${yourdomain}.key"
-// sudo cp -f $cert_file /usr/local/etc/ipsec.d/certs/server.cert.pem
-// sudo cp -f $key_file /usr/local/etc/ipsec.d/private/server.pem
-// sudo cp -f $cert_file /usr/local/etc/ipsec.d/certs/client.cert.pem
-// sudo cp -f $key_file /usr/local/etc/ipsec.d/private/client.pem
-// sudo /usr/local/sbin/ipsec restart
