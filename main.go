@@ -107,7 +107,7 @@ func connect(addr string) {
 		}
 
 	}
-	d1 := fmt.Sprintf("[%s] close min %s max %s timeout %s\n", time.Now().Format("2006-01-02 15:04:05"), min, max, timeout)
+	d1 := fmt.Sprintf("[%s] close index %d min %s max %s timeout %s\n", time.Now().Format("2006-01-02 15:04:05"), lost, min, max, timeout)
 	fmt.Println("lost connection")
 	fmt.Println(d1)
 	_, err = f.Write([]byte(d1))
