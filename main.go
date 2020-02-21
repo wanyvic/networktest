@@ -99,8 +99,8 @@ func connect(addr string) {
 		logrus.Error("setReadDeadline failed:", err)
 	}
 	for scanner.Scan() {
-		str := scanner.Text()
-		fmt.Println("-->", str)
+		// str := scanner.Text()
+		// fmt.Println("-->", str)
 		r := time.Since(t)
 		if r < min {
 			min = r
@@ -129,11 +129,10 @@ func connect(addr string) {
 		if sendExtranonceSubscribe {
 			send := `{"id": 3, "method": "mining.extranonce.subscribe", "params": []}`
 			conn.Write([]byte(send + "\n"))
-
-			fmt.Println("<--", send)
+			// fmt.Println("<--", send)
 		} else {
 			conn.Write([]byte(subscribe + "\n"))
-			fmt.Println("<--", subscribe)
+			// fmt.Println("<--", subscribe)
 		}
 		err = conn.SetReadDeadline(time.Now().Add(timeout)) // timeout
 		if err != nil {
