@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -88,10 +89,10 @@ func connect(addr string) {
 	defer conn.Close()
 	t := time.Now()
 
-	subscribe := `{"id": 1, "method": "mining.subscribe", "params": ["bmminer/2.0.0/Antminer S9/13500"]}`
-	// authorize := `{"id": 2, "method": "mining.authorize", "params": ["myAzQj4bH4mMF2GpoLSY2v4qVquASTpzR4", "x"]}`
+	subscribe := `{"id": 7, "method": "mining.subscribe", "params": ["bmminer/2.0.0/Antminer S9/13500"]}`
+	authorize := `{"id": 2, "method": "mining.authorize", "params": ["myAzQj4bH4mMF2GpoLSY2v4qVquASTpzR4", "x"]}`
 	conn.Write([]byte(subscribe + "\n"))
-	// conn.Write([]byte(authorize + "\n"))
+	conn.Write([]byte(authorize + "\n"))
 
 	scanner := bufio.NewScanner(conn)
 	err = conn.SetReadDeadline(time.Now().Add(timeout)) // timeout
@@ -99,8 +100,11 @@ func connect(addr string) {
 		logrus.Error("setReadDeadline failed:", err)
 	}
 	for scanner.Scan() {
-		// str := scanner.Text()
+		str := scanner.Text()
 		// fmt.Println("-->", str)
+		if !strings.Contains(str, `"id":7`) {
+			continue
+		}
 		r := time.Since(t)
 		if r < min {
 			min = r
@@ -127,7 +131,7 @@ func connect(addr string) {
 		t = time.Now()
 
 		if sendExtranonceSubscribe {
-			send := `{"id": 3, "method": "mining.extranonce.subscribe", "params": []}`
+			send := `{"id": 7, "method": "mining.extranonce.subscribe", "params": []}`
 			conn.Write([]byte(send + "\n"))
 			// fmt.Println("<--", send)
 		} else {
