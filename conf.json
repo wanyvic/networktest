@@ -1,0 +1,11 @@
+{
+    "addr_list":[
+        {
+            "pool":"hk.huobipool.com:3333",
+            "mode":1
+        },{
+            "pool":"bn.huobipool.com:3333",
+            "mode":0
+        }
+    ]
+}
