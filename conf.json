@@ -7,5 +7,8 @@
             "pool":"bn.huobipool.com:3333",
             "mode":0
         }
-    ]
+    ],
+    "dial_timeout": 3,
+    "read_write_timeout":30,
+    "ping_rate":1
 }

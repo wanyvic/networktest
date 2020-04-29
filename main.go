@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/golang/glog"
 )
@@ -23,6 +24,9 @@ func main() {
 	if err != nil {
 		glog.Fatal(err)
 	}
+	ConnectionTimeout = time.Duration(config.DialTimeout) * time.Second
+	ConnReadWriteTimeout = time.Duration(config.ReadWriteTimeout) * time.Second
+	WriteRate = time.Duration(config.PingRate) * time.Second
 	ctx, cancel := context.WithCancel(context.Background())
 	wg := sync.WaitGroup{}
 	for _, list := range config.AddrList {

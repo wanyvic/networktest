@@ -25,7 +25,7 @@ const (
 )
 
 var (
-	WriteTimeDuration    = time.Second * 1
+	WriteRate            = time.Second * 1
 	ConnectionTimeout    = time.Second * 3
 	ConnReadWriteTimeout = time.Second * 3
 )
@@ -102,7 +102,7 @@ func (poolWatcher *PoolChecker) handle() {
 			}
 			return
 		}
-		time.Sleep(WriteTimeDuration)
+		time.Sleep(WriteRate)
 	}
 }
 

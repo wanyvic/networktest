@@ -10,7 +10,10 @@ type Pool struct {
 	Mode int    `json:"mode"`
 }
 type Config struct {
-	AddrList []Pool `json:"addr_list"`
+	AddrList         []Pool `json:"addr_list"`
+	DialTimeout      int    `json:"dial_timeout"`
+	ReadWriteTimeout int    `json:"read_write_timeout"`
+	PingRate         int    `json:"ping_rate"`
 }
 
 func LoadConfigFile(filename string) (config *Config, _ error) {
